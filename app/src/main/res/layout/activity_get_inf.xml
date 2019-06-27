@@ -106,12 +106,15 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="547dp" />
 
-    <TextView
-        android:id="@+id/textView8"
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
-        android:text="TextView" />
+        android:text="입력하세요" />
+
+
+
 
     <TextView
         android:id="@+id/textView9"

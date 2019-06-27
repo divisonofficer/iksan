@@ -24,11 +24,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,6 +66,29 @@ public class GetInfActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_inf);
+        /*메모*/
+        EditText editText = (EditText)this.findViewById(R.id.editText);
+        editText.addTextChangedListener(new TextWatcher() {
+            // 입력되는 텍스트에 변화가 있을 때
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+               // Toast.makeText(MainActivity.this, "입력중", Toast.LENGTH_SHORT).show();
+            }
+
+            // 입력이 끝났을 때
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //Toast.makeText(MainActivity.this, "입력완료", Toast.LENGTH_SHORT).show();
+            }
+
+            // 입력하기 전에
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+               // Toast.makeText(MainActivity.this, "입력전", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 /*녹음*/
         mRecorder = new MediaRecorder();
 
