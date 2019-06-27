@@ -1,11 +1,13 @@
 package com.sss.fills;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +24,21 @@ public class ViewPhotoActivity extends AppCompatActivity {
     private final int STATE_PLAYING = 1;
     private final int STATE_PAUSING = 2;
     private final int STATEMP_ERROR = 3;
-
+    private ImageView photo;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_photo);
+
+        photo = (ImageView) findViewById(R.id.imageView2);
+        try {
+            Uri uri = Uri.parse("file:///" + Environment.getExternalStorageDirectory() + "/572/내그림/image_sample.jpg");
+            photo.setImageURI(uri);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         btnPause=(Button) findViewById(R.id.play);
 

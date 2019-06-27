@@ -43,8 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
-
 public class GetInfActivity extends AppCompatActivity {
     /*사진 활용*/
     private static final String TAG = "blackjin";
@@ -52,6 +50,7 @@ public class GetInfActivity extends AppCompatActivity {
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_CAMERA = 2;
     private File tempFile;
+    private Boolean isCamera = false;
     /*소리 활용*/
     MediaRecorder mRecorder = null;
     boolean isRecording = false;
@@ -261,6 +260,7 @@ public class GetInfActivity extends AppCompatActivity {
      */
     private void setImage() {
         ImageView imageView = findViewById(R.id.imageView);
+        ImageUtils.resizeFile(tempFile, tempFile, 1280, isCamera);
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
         Log.d(TAG, "setImage : " + tempFile.getAbsolutePath());
