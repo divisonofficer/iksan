@@ -8,6 +8,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -16,9 +21,12 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,10 +36,14 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 
 public class GetInfActivity extends AppCompatActivity {
     /*사진 활용*/
@@ -41,26 +53,60 @@ public class GetInfActivity extends AppCompatActivity {
     private static final int PICK_FROM_CAMERA = 2;
     private File tempFile;
     /*소리 활용*/
-
+    MediaRecorder mRecorder = null;
+    boolean isRecording = false;
+    Button mBtRecord = null;
+    String mPath = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_inf);
-        final Button go_next = (Button) findViewById(R.id.record);
-        /* 이벤트를 받기 위한 리스너 작성 */
-        go_next.setOnClickListener(
+/*녹음*/
+        mRecorder = new MediaRecorder();
+        mBtRecord = (Button) findViewById(R.id.record);
+        mBtRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isRecording == false) {
+                    initAudioRecorder();
+                    mRecorder.start();
+
+                    isRecording = true;
+                    mBtRecord.setText("Stop Recording");
+                } else {
+                    mRecorder.stop();
+
+                    isRecording = false;
+                    mBtRecord.setText("Start Recording");
+                }
+            }
+        });
+        /*final Button record = (Button) findViewById(R.id.record);
+        *//* 이벤트를 받기 위한 리스너 작성 *//*
+        record.setOnClickListener(
                 new View.OnClickListener() {	// Listener
                     public void onClick(View v) {
                         Log.i("Act1.btn_act1_go2", "onClick");
                         Intent intent = getPackageManager().getLaunchIntentForPackage("com.sec.android.app.voicenote");
                         startActivity(intent);
+                        //startActivity(intent);
+                    }
+                }
+        );*/
+        final Button go_next = (Button) findViewById(R.id.loading);
+        /* 이벤트를 받기 위한 리스너 작성 */
+        go_next.setOnClickListener(
+                new View.OnClickListener() {	// Listener
+                    public void onClick(View v) {
+                        Log.i("Act1.btn_act1_go2", "onClick");
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("com.sec.android.app.myfiles");
                         startActivity(intent);
+                       // startActivity(intent);
                     }
                 }
         );
         tedPermission();//사진 권환 설정,파일 설정
         permissionCheck();//음악 권환 설정
-
 
         findViewById(R.id.btnGallery).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,8 +127,20 @@ public class GetInfActivity extends AppCompatActivity {
         });
 
     }
+    void initAudioRecorder() {
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
-
+        mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PCMRECORDER/record.aac";
+        Log.d(TAG, "file path is " + mPath);
+        mRecorder.setOutputFile(mPath);
+        try {
+            mRecorder.prepare();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
@@ -140,14 +198,11 @@ public class GetInfActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_FROM_ALBUM);
     }
 
-
     /**
      *  카메라에서 이미지 가져오기
      */
     private void takePhoto() {
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         try {
             tempFile = createImageFile();
         } catch (IOException e) {
@@ -156,10 +211,18 @@ public class GetInfActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (tempFile != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
 
-            Uri photoUri = Uri.fromFile(tempFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            startActivityForResult(intent, PICK_FROM_CAMERA);
+                Uri photoUri = FileProvider.getUriForFile(this,
+                        "{package name}.provider", tempFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+
+            } else {
+                Uri photoUri = Uri.fromFile(tempFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+            }
         }
     }
 
@@ -179,7 +242,6 @@ public class GetInfActivity extends AppCompatActivity {
         // 파일 생성
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         Log.d(TAG, "createImageFile : " + image.getAbsolutePath());
-
         return image;
     }
 
@@ -187,13 +249,10 @@ public class GetInfActivity extends AppCompatActivity {
      *  tempFile 을 bitmap 으로 변환 후 ImageView 에 설정한다.
      */
     private void setImage() {
-
         ImageView imageView = findViewById(R.id.imageView);
-
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
         Log.d(TAG, "setImage : " + tempFile.getAbsolutePath());
-
         imageView.setImageBitmap(originalBm);
 
         /**
@@ -202,9 +261,7 @@ public class GetInfActivity extends AppCompatActivity {
          *  기존에 데이터가 남아 있게 되면 원치 않은 삭제가 이뤄집니다.
          */
         tempFile = null;
-
     }
-
     /**
      *  권한 설정
      */
@@ -215,7 +272,6 @@ public class GetInfActivity extends AppCompatActivity {
         }
     }
     private void tedPermission() {
-
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -226,7 +282,6 @@ public class GetInfActivity extends AppCompatActivity {
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 // 권한 요청 실패
                 isPermission = false;
-
             }
         };
         TedPermission.with(this)
