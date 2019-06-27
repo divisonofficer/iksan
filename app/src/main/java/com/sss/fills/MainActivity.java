@@ -1,5 +1,6 @@
 package com.sss.fills;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,6 +26,22 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Fills");
         setSupportActionBar(toolbar);
+
+
+        final Button go_next = (Button) findViewById(R.id.movebt);
+        /* 이벤트를 받기 위한 리스너 작성 */
+        go_next.setOnClickListener(
+                new View.OnClickListener() {   // Listener
+                    public void onClick(View v) {
+
+                        Intent intent3 = new Intent(MainActivity.this, MapActivity.class);
+                        startActivity(intent3);
+                    }
+                }
+        );
+
+
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
