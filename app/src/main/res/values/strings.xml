@@ -16,4 +16,15 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="title_activity_province">ProvinceActivity</string>
+
+    <string name="dialog_title">Items available in a shop</string>
+    <string name="ok_label">OK</string>
+    <string name="clear_all_label">Clear all</string>
+
+    <string-array name="shopping_item">
+        <item>역사</item>
+        <item>힐링</item>
+        <item>데이트</item>
+        <item>맛집</item>
+    </string-array>
 </resources>
