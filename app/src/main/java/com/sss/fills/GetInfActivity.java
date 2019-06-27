@@ -105,6 +105,17 @@ public class GetInfActivity extends AppCompatActivity {
                     }
                 }
         );
+        final Button next = (Button) findViewById(R.id.basic);
+        /* 이벤트를 받기 위한 리스너 작성 */
+        next.setOnClickListener(
+                new View.OnClickListener() {	// Listener
+                    public void onClick(View v) {
+                        //  Log.i("Act1.btn_act1_go2", "onClick");
+                        Intent intent1 = new Intent(GetInfActivity.this, ViewPhotoActivity.class);
+                        startActivity(intent1);
+                    }
+                }
+        );
         tedPermission();//사진 권환 설정,파일 설정
         permissionCheck();//음악 권환 설정
 
