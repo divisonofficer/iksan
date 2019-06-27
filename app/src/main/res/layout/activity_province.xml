@@ -6,27 +6,27 @@
     android:layout_height="match_parent"
     android:background="@drawable/ic_jeonbuk"
     tools:context=".MainActivity">
-
+    <Button
+        android:id="@+id/gunsan"
+        android:layout_width="116dp"
+        android:layout_height="87dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="319dp"
+        android:background="@drawable/ic_gunsan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <Button
         android:id="@+id/icksan"
-        android:layout_width="130dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="70dp"
+        android:layout_width="107dp"
+        android:layout_height="127dp"
+        android:layout_marginStart="118dp"
         android:layout_marginLeft="70dp"
-        android:layout_marginTop="355dp"
+        android:layout_marginTop="265dp"
         android:background="@drawable/ic_icksan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/gunsan"
-        android:layout_width="130dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="355dp"
-        android:background="@drawable/ic_gunsan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
 </android.support.design.widget.CoordinatorLayout>

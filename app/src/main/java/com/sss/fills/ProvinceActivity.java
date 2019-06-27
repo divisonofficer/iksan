@@ -19,7 +19,7 @@ public class ProvinceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent1 = new Intent(ProvinceActivity.this, MainActivity.class);
+                Intent intent1 = new Intent(ProvinceActivity.this, GetInfActivity.class);
                 startActivity(intent1);
             }
         });
@@ -30,7 +30,7 @@ public class ProvinceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent1 = new Intent(ProvinceActivity.this, MainActivity.class);
+                Intent intent1 = new Intent(ProvinceActivity.this, Gunsan.class);
                 startActivity(intent1);
             }
         });

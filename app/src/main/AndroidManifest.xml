@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Gunsan"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_home"
@@ -39,7 +40,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <provider
             android:name="android.support.v4.content.FileProvider"

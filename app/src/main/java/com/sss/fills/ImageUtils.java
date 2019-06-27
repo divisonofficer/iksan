@@ -165,7 +165,7 @@ public class ImageUtils {
                     bitmap.recycle();
                     bitmap = converted;
                 }
-            }
+        }
             catch(OutOfMemoryError ex)
             {
                 // 메모리가 부족하여 회전을 시키지 못할 경우 그냥 원본을 반환합니다.
