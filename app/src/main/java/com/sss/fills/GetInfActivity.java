@@ -29,7 +29,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -54,7 +56,8 @@ public class GetInfActivity extends AppCompatActivity {
     /*소리 활용*/
     MediaRecorder mRecorder = null;
     boolean isRecording = false;
-    Button mBtRecord = null;
+    ImageButton mBtRecord = null;
+    TextView tRecord=null;
     String mPath = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +65,8 @@ public class GetInfActivity extends AppCompatActivity {
         setContentView(R.layout.activity_get_inf);
 /*녹음*/
         mRecorder = new MediaRecorder();
-        mBtRecord = (Button) findViewById(R.id.record);
+
+        mBtRecord = (ImageButton) findViewById(R.id.record);
         mBtRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,12 +75,12 @@ public class GetInfActivity extends AppCompatActivity {
                     mRecorder.start();
 
                     isRecording = true;
-                    mBtRecord.setText("Stop Recording");
+                    //mBtRecord.setText("Stop Recording");
                 } else {
                     mRecorder.stop();
 
                     isRecording = false;
-                    mBtRecord.setText("Start Recording");
+                   // mBtRecord.setText("Start Recording");
                 }
             }
         });
@@ -92,7 +96,7 @@ public class GetInfActivity extends AppCompatActivity {
                     }
                 }
         );*/
-        final Button go_next = (Button) findViewById(R.id.loading);
+        final ImageButton go_next = (ImageButton) findViewById(R.id.loading);
         /* 이벤트를 받기 위한 리스너 작성 */
         go_next.setOnClickListener(
                 new View.OnClickListener() {	// Listener
@@ -104,8 +108,8 @@ public class GetInfActivity extends AppCompatActivity {
                     }
                 }
         );
-        final Button next = (Button) findViewById(R.id.basic);
-        /* 이벤트를 받기 위한 리스너 작성 */
+       /* final Button next = (Button) findViewById(R.id.basic);
+        *//* 이벤트를 받기 위한 리스너 작성 *//*
         next.setOnClickListener(
                 new View.OnClickListener() {	// Listener
                     public void onClick(View v) {
@@ -114,7 +118,7 @@ public class GetInfActivity extends AppCompatActivity {
                         startActivity(intent1);
                     }
                 }
-        );
+        );*/
         tedPermission();//사진 권환 설정,파일 설정
         permissionCheck();//음악 권환 설정
 
