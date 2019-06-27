@@ -2,6 +2,7 @@ package com.sss.fills;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,7 +46,18 @@ public class GetInfActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_inf);
-
+        final Button go_next = (Button) findViewById(R.id.record);
+        /* 이벤트를 받기 위한 리스너 작성 */
+        go_next.setOnClickListener(
+                new View.OnClickListener() {	// Listener
+                    public void onClick(View v) {
+                        Log.i("Act1.btn_act1_go2", "onClick");
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("com.sec.android.app.voicenote");
+                        startActivity(intent);
+                        startActivity(intent);
+                    }
+                }
+        );
         tedPermission();//사진 권환 설정,파일 설정
         permissionCheck();//음악 권환 설정
 
