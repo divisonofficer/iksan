@@ -9,7 +9,7 @@
     <color name = "overlayBackground">#7f8c8d98</color>
     <color name = "overlayActionBar">#0e0d0e</color>
 
-    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_color">#0e0d0e</color>
     <color name="fbutton_default_shadow_color">#ff3493c8</color>
     //Color Swatches provided by http://designmodo.github.io/Flat-UI/
     <color name="fbutton_color_turquoise">#1abc9c</color>

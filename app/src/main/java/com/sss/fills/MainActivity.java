@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -45,6 +47,18 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 Intent intent1 = new Intent(MainActivity.this, ProvinceActivity.class);
+                startActivity(intent1);
+            }
+
+        });
+
+        ImageView btnFilter = (ImageView)findViewById(R.id.filter);
+        btnFilter.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent1 = new Intent(MainActivity.this, FilterActivity.class);
                 startActivity(intent1);
             }
         });

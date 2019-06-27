@@ -35,6 +35,8 @@ dependencies {
     //Add Library
     implementation 'com.android.support:design:28.+' //appbar
     implementation 'gr.pantrif:easy-android-splash-screen:0.0.1' //splash screen
+    implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
+    implementation 'info.hoang8f:fbutton:1.0.5' //fbutton
 
 
 }
