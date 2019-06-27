@@ -30,7 +30,7 @@ public class ProvinceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent1 = new Intent(ProvinceActivity.this, Gunsan.class);
+                Intent intent1 = new Intent(ProvinceActivity.this, FilterActivity.class);
                 startActivity(intent1);
             }
         });
