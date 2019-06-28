@@ -54,11 +54,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Gunsan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
@@ -73,7 +68,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAodofiBI_O4XbVYcGtV2wheWPzv-X6zXA" />
+            android:value="AIzaSyBWDEbj2MOXEfNd3OndbD49G1o2kUgcL-U" />
 
         <uses-library
             android:name="org.apache.http.legacy"

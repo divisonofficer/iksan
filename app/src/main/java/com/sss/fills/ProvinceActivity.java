@@ -20,7 +20,7 @@ public class ProvinceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent1 = new Intent(ProvinceActivity.this, GetInfActivity.class);
+                Intent intent1 = new Intent(ProvinceActivity.this, MapActivity.class);
                 startActivity(intent1);
             }
         });
