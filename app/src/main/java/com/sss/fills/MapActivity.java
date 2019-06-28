@@ -126,6 +126,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     };
     MapFragment mapFragment;
     private static int  PICK_IMAGE_REQUEST=1;
+    private GoogleMap mMap;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,16 +141,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         marker=new Marker[Max_Spot];
-        marker[0] = new Marker(126.94397,35.94884,"익산1","이곳은 익산의 어딘가이다.","전라북도 익산시 무슨동 무슨번지");
-        marker[0].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
-        marker[1] = new Marker(126.97213,35.98111,"익산2","이곳은 익산의 어딘가이다.","전라북도 익산시 무슨길 무슨번");
-        marker[1].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
-        marker[2] = new Marker(126.91209,35.98219,"익산3","이곳은 익산의 어딘가이다.","전라북도 익산시 어딘가");
-        marker[2].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
-        marker[3] = new Marker(126.89054,35.92987,"익산4","이곳은 익산의 어딘가이다.","전라북도 전주시 안가요");
-        marker[3].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
-        marker[4] = new Marker(126.89054,35.89987,"익산5","이곳은 익산의 어딘가이다.","전라북도 위에는 뭐가있나요");
-        marker[4].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
+
+        marker[0] = new Marker(127.093879, 35.982107, "왕궁다원","누구나 좋아하는 곳");
+        marker[1] = new Marker(126.946112, 35.953805, "오르도","인기많은 감성카페");
+        marker[2] = new Marker(126.944783, 36.001420, "미스터박","맛있는 밥집");
+        marker[3] = new Marker(126.978475, 35.961138, "당고","젊은층이 좋아하는 곳");
+        marker[4] = new Marker(127.024292, 36.011825, "미륵산순두부","순두부맛있어요");
+        marker[5] = new Marker(127.054974, 35.973117, "왕궁리유적","킹궁리유적");
+        marker[6] = new Marker(127.033123, 35.980438, "쌍릉","릉이 더블");
+        marker[7] = new Marker(127.030431, 36.012059, "미륵사지 당간지주","짐은 미륵이다");
+        marker[8] = new Marker(127.040109, 35.991998, "토성","흙흙");
 
         ConstraintLayout Lay = (ConstraintLayout)findViewById(R.id.SpotOption);
         Lay.setVisibility(View.GONE);
@@ -192,24 +193,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
     }
-    public final int Max_Spot=5;
+
+    public final int Max_Spot=9;
     public static Marker []marker;
+
     MarkerOptions[] markerOptions;
     public void onMapReady(final GoogleMap map) {
+        mMap = map;
+        map.getUiSettings().setZoomGesturesEnabled(false);
+        map.getUiSettings().setRotateGesturesEnabled(false);
 
-        markerOptions=new MarkerOptions[Max_Spot];
+        markerOptions=new MarkerOptions[Max_Spot+1];
         for(int i=0;i<Max_Spot;i++) {
-            markerOptions[i] = new MarkerOptions();
-            markerOptions[i].position(marker[i].returnLocation());
-            markerOptions[i].title(marker[i].getName());
-            markerOptions[i].snippet(marker[i].getIndex());
+            if(i == Max_Spot-1) {
+                markerOptions[i] = new MarkerOptions();
+                markerOptions[i].position(marker[i].returnLocation());
+                markerOptions[i].title(marker[i].getName());
+                markerOptions[i].snippet(marker[i].getIndex());
+                markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_spot));
 
-            map.addMarker(markerOptions[i]);
+
+                markerOptions[i+1] = new MarkerOptions();
+                markerOptions[i+1].position(new LatLng(35.874401, 127.006044));
+                markerOptions[i+1].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bounder_new));
+                map.addMarker(markerOptions[i]);
+                map.addMarker(markerOptions[i+1]);
+            }
+            else {
+                markerOptions[i] = new MarkerOptions();
+                markerOptions[i].position(marker[i].returnLocation());
+                markerOptions[i].title(marker[i].getName());
+                markerOptions[i].snippet(marker[i].getIndex());
+                markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_spot));
+                map.addMarker(markerOptions[i]);
+            }
 
         }
 
-        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(35.94884,126.94397)));
-        map.animateCamera(CameraUpdateFactory.zoomTo(10));
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(36.023070, 126.989683)));
+        map.animateCamera(CameraUpdateFactory.zoomTo(11));
         map.setOnMarkerClickListener(this);
         map.setOnMapClickListener(this);
 
@@ -238,20 +260,158 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 int exifDegree = exifOrientationToDegrees(exifOrientation);
                 scaled=rotate(scaled,exifDegree);
                 scaled=createSquaredBitmap(scaled);
-                  marker[Cur_Spot].photo=scaled;
-                  marker[Cur_Spot].image_exists=true;
+                Log.e("sss", ""+Cur_Spot);
+                marker[Cur_Spot].photo=scaled;
+                marker[Cur_Spot].image_exists=true;
                 Paint paint= new Paint();
                 Bitmap sccaled=scaled.copy(scaled.getConfig(),true);
                 Canvas tempcanvas= new Canvas(sccaled);
-                Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
-                Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth()/2,scaled.getHeight()/2,true);
-                tempcanvas.drawBitmap(scaled,0,0,paint);
-                PorterDuff.Mode mode=Mode.XOR;
-                paint.setXfermode(new PorterDuffXfermode(mode));
-                tempcanvas.drawBitmap(Nshape,0,0,paint);
-                Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 128, 128, true);
-                tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
-                  refreshPhoto();
+                MarkerOptions makerOptions = new MarkerOptions();
+
+                if(Cur_Spot == 0) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_1)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 850, 670, true);
+                    makerOptions
+                            .position(new LatLng(36.052777, 126.959019))
+                            .title("01번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 1) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_2)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 698, 884, true);
+                    makerOptions
+                            .position(new LatLng(36.014077, 127.025019))
+                            .title("02번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 2) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_3)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 618, 568, true);
+                    makerOptions
+                            .position(new LatLng(36.002777, 126.929019))
+                            .title("03번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 3) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_4)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 464, 778, true);
+                    makerOptions
+                            .position(new LatLng(35.962877, 127.043019))
+                            .title("04번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 4) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_5)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 432, 687, true);
+                    makerOptions
+                            .position(new LatLng(35.965877, 127.100019))
+                            .title("05번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 5) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_6)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 850, 670, true);
+                    makerOptions
+                            .position(new LatLng(36.026070, 126.989683))
+                            .title("06번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 6) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_7)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 850, 670, true);
+                    makerOptions
+                            .position(new LatLng(36.025070, 126.989683))
+                            .title("07번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 7) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_8)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 850, 670, true);
+                    makerOptions
+                            .position(new LatLng(36.024070, 126.989683))
+                            .title("08번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
+                else if(Cur_Spot == 8) {
+                    Bitmap Nshape=((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_9)).getBitmap();
+                    Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth(),scaled.getHeight(),true);
+                    tempcanvas.drawBitmap(scaled,0,0,paint);
+                    PorterDuff.Mode mode=Mode.XOR;
+                    paint.setXfermode(new PorterDuffXfermode(mode));
+                    tempcanvas.drawBitmap(Nshape,0,0,paint);
+                    Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 850, 670, true);
+                    makerOptions
+                            .position(new LatLng(36.023070, 126.989683))
+                            .title("09번 지역"); // 타이틀.
+                    makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    mMap.addMarker(makerOptions);
+                    //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
+                    refreshPhoto();
+                }
 
 
             } else {
