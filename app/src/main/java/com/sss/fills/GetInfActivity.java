@@ -81,7 +81,7 @@ public class GetInfActivity extends AppCompatActivity {
                 String send=new String(editText.getText().toString());
                 MapActivity.marker[MapActivity.Cur_Spot].Memo=send;
                 SavedMemo=send;
-                Toast.makeText(getApplication(),send+MapActivity.marker[MapActivity.Cur_Spot].Memo,Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplication(),send+MapActivity.marker[MapActivity.Cur_Spot].Memo,Toast.LENGTH_LONG).show();
                 Log.e("ferwef","메모적었다");
             }
         });
@@ -342,7 +342,7 @@ public class GetInfActivity extends AppCompatActivity {
         imageView.setImageBitmap(scaled);
         MapActivity.marker[MapActivity.Cur_Spot].photo=scaled;
         MapActivity.marker[MapActivity.Cur_Spot].image_exists=true;
-
+/*
         Paint paint= new Paint();
         Bitmap sccaled=scaled.copy(scaled.getConfig(),true);
         Canvas tempcanvas= new Canvas(sccaled);
@@ -353,7 +353,7 @@ public class GetInfActivity extends AppCompatActivity {
         paint.setXfermode(new PorterDuffXfermode(mode));
         tempcanvas.drawBitmap(Nshape,0,0,paint);
         Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 128, 128, true);
-        MapActivity.marker[MapActivity.Cur_Spot].markerimage=sscaled;
+        MapActivity.marker[MapActivity.Cur_Spot].markerimage=sscaled;*/
 
 
 

@@ -34,6 +34,8 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MapActivity" />
+        <activity android:name=".ViewPhotoActivity" />
+
         <activity android:name=".LauncyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

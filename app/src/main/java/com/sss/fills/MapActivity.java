@@ -141,16 +141,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         marker=new Marker[Max_Spot];
-
-        marker[0] = new Marker(127.093879, 35.982107, "왕궁다원","누구나 좋아하는 곳");
-        marker[1] = new Marker(126.946112, 35.953805, "오르도","인기많은 감성카페");
-        marker[2] = new Marker(126.944783, 36.001420, "미스터박","맛있는 밥집");
-        marker[3] = new Marker(126.978475, 35.961138, "당고","젊은층이 좋아하는 곳");
-        marker[4] = new Marker(127.024292, 36.011825, "미륵산순두부","순두부맛있어요");
-        marker[5] = new Marker(127.054974, 35.973117, "왕궁리유적","킹궁리유적");
-        marker[6] = new Marker(127.033123, 35.980438, "쌍릉","릉이 더블");
-        marker[7] = new Marker(127.030431, 36.012059, "미륵사지 당간지주","짐은 미륵이다");
-        marker[8] = new Marker(127.040109, 35.991998, "토성","흙흙");
+        altermarkis=new boolean[Max_Spot];
+        for(int i=0;i<Max_Spot;i++) altermarkis[i]=false;
+        marker[0] = new Marker(127.093879, 35.982107, "왕궁다원","누구나 좋아하는 곳","전라북도 익산시 왕궁면 사곡길 21-5");
+        marker[1] = new Marker(126.946112, 35.953805, "오르도","인기많은 감성카페","전라북도 익산시 선화도 21길 28");
+        marker[2] = new Marker(126.944783, 36.001420, "미스터박","맛있는 밥집","전라북도 익산시 황등면 황등로 119-1");
+        marker[3] = new Marker(126.978475, 35.961138, "당고","젊은층이 좋아하는 곳","전라북도 익산시 무왕로 11길 6-11");
+        marker[4] = new Marker(127.024292, 36.011825, "미륵산순두부","순두부맛있어요","전라북도 익산시 금마면 미륵사지로 397");
+        marker[5] = new Marker(127.054974, 35.973117, "왕궁리유적","왕궁리유적","전라북도 익산시 왕궁면 궁성로 666");
+        marker[6] = new Marker(127.033123, 35.980438, "쌍릉","쌍릉입니다.","전라북도 익산시 석왕동 산54");
+        marker[7] = new Marker(127.030431, 36.012059, "미륵사지 당간지주","미륵사지 당간지주","전라북도 익산시 금마면 기양리");
+        marker[8] = new Marker(127.040109, 35.991998, "토성","흙으로 만든 성","전라북도 익산시 금마면 서고도리");
 
         ConstraintLayout Lay = (ConstraintLayout)findViewById(R.id.SpotOption);
         Lay.setVisibility(View.GONE);
@@ -203,30 +204,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.getUiSettings().setZoomGesturesEnabled(false);
         map.getUiSettings().setRotateGesturesEnabled(false);
 
-        markerOptions=new MarkerOptions[Max_Spot+1];
+        markerOptions=new MarkerOptions[Max_Spot];
         for(int i=0;i<Max_Spot;i++) {
-            if(i == Max_Spot-1) {
-                markerOptions[i] = new MarkerOptions();
-                markerOptions[i].position(marker[i].returnLocation());
-                markerOptions[i].title(marker[i].getName());
-                markerOptions[i].snippet(marker[i].getIndex());
-                markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_spot));
 
-
-                markerOptions[i+1] = new MarkerOptions();
-                markerOptions[i+1].position(new LatLng(35.874401, 127.006044));
-                markerOptions[i+1].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bounder_new));
-                map.addMarker(markerOptions[i]);
-                map.addMarker(markerOptions[i+1]);
-            }
-            else {
                 markerOptions[i] = new MarkerOptions();
                 markerOptions[i].position(marker[i].returnLocation());
                 markerOptions[i].title(marker[i].getName());
                 markerOptions[i].snippet(marker[i].getIndex());
                 markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_spot));
                 map.addMarker(markerOptions[i]);
-            }
+
 
         }
 
@@ -234,6 +221,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         map.animateCamera(CameraUpdateFactory.zoomTo(11));
         map.setOnMarkerClickListener(this);
         map.setOnMapClickListener(this);
+
+    }
+    boolean[] altermarkis;
+    public void ImageCutting(Bitmap origin,Bitmap Mask,int width, int height,double len, double lon,String title)
+    {
+        Paint paint= new Paint();
+        Bitmap sccaled=origin.copy(origin.getConfig(),true);
+        Canvas tempcanvas= new Canvas(sccaled);
+        MarkerOptions makerOptions = new MarkerOptions();
+        Bitmap Nshape=Mask;
+        Nshape=Bitmap.createScaledBitmap(Nshape,origin.getWidth(),origin.getHeight(),true);
+        tempcanvas.drawBitmap(origin,0,0,paint);
+        PorterDuff.Mode mode=Mode.XOR;
+        paint.setXfermode(new PorterDuffXfermode(mode));
+        tempcanvas.drawBitmap(Nshape,0,0,paint);
+        Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, width, height, true);
+        makerOptions
+                .position(new LatLng(len, lon))
+                .title(title); // 타이틀.
+        makerOptions.icon(BitmapDescriptorFactory.fromBitmap(sscaled));
+
+        mMap.addMarker(makerOptions);
+        //tempMarker.setIcon(BitmapDescriptorFactory.fromBitmap(sscaled));
 
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -513,7 +523,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     com.google.android.gms.maps.model.Marker tempMarker;
     @Override
     public boolean onMarkerClick(com.google.android.gms.maps.model.Marker Mmarker) {
-
+        Boolean is_ok=false;
         if(Cur_Spot>-1)
         {
             if(!(GetInfActivity.SavedMemo!=null && GetInfActivity.SavedMemo.compareTo("")!=0))
@@ -523,8 +533,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         for(int i=0;i<Max_Spot;i++)
         {
-         if(marker[i].getName().compareTo(Mmarker.getTitle())==0) Cur_Spot=i;
+            if(Mmarker.getTitle()==null) continue;
+         if(marker[i].getName().compareTo(Mmarker.getTitle())==0) {
+             Cur_Spot = i;
+             is_ok=true;
+             break;
+         }
         }
+        if(!is_ok) return true;
         tempMarker=Mmarker;
         TextView text=(TextView)findViewById(R.id.Spotnametext);
         text.setText(marker[Cur_Spot].getName());
@@ -540,6 +556,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
+
+        for(int i=0;i<Max_Spot;i++) {
+            if(!altermarkis[i] && marker[i].image_exists)
+            {
+                switch(i)
+                {
+                    case 0 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_1)).getBitmap(),600,427,36.082777, 126.959019,"왕궁다원");  altermarkis[i]=true; break;
+                    case 1 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_2)).getBitmap(),500,633,36.024077, 127.015019,"오르도");  altermarkis[i]=true; break;
+                    case 2 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector1_3)).getBitmap(),450,413,36.012777, 126.919019,"미스터박");  altermarkis[i]=true; break;
+                    case 3 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_4)).getBitmap(),850,670,36.032777, 126.959019,"당고");  altermarkis[i]=true; break;
+
+                    case 4 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_5)).getBitmap(),850,670,36.022777, 126.959019,"미륵산순두부");  altermarkis[i]=true; break;
+                    case 5 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector2_6)).getBitmap(),850,670,36.012777, 126.859019,"왕궁리유적");  altermarkis[i]=true; break;
+                    case 6 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_7)).getBitmap(),850,670,36.082777, 126.959019,"쌍릉");  altermarkis[i]=true; break;
+                    case 7 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_8)).getBitmap(),850,670,36.062777, 127.159019,"미륵사지 당간지주");  altermarkis[i]=true; break;
+                    case 8 : ImageCutting(marker[i].photo,((BitmapDrawable)getResources().getDrawable(R.drawable.sector3_9)).getBitmap(),850,670,36.062777, 126.959019,"토성");  altermarkis[i]=true; break;
+
+
+
+                }
+            }
+        }
 
         ConstraintLayout lay=(ConstraintLayout)findViewById(R.id.SpotOption);
         if(Cur_Spot>-1)
