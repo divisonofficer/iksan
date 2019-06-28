@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class ProvinceActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class ProvinceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent intent1 = new Intent(ProvinceActivity.this, FilterActivity.class);
+                Intent intent1 = new Intent(ProvinceActivity.this, Gunsan.class);
                 startActivity(intent1);
             }
         });
