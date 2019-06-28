@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -13,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -70,14 +72,22 @@ class Marker{
     public Bitmap photo;
     public int photo_cnt;
     public Boolean image_exists;
-    private String Name,Index,Memo;
-    Marker(double Lon, double Len, String name,String index)
+    private String Name,Index;
+    public String Memo;
+    public File Sound=null;
+    public String Adress;
+    Drawable MarkerMask;
+    public Bitmap markerimage=null;
+    Marker(double Lon, double Len, String name,String index,String adr)
     {
+
+
         this.Lon=Lon;
         this.Len=Len;
         this.Name=name;
         this.Index=index;
         photo_cnt=0;
+        Adress=adr;
         Memo="메모를 입력하세요";
         image_exists=false;
     }
@@ -104,8 +114,9 @@ class Marker{
     }
 }
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener{
-    public int Cur_Spot=-1;
+    public static int Cur_Spot=-1;
     String[] permission_list = {
+
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -129,11 +140,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) this);
         marker=new Marker[Max_Spot];
-        marker[0] = new Marker(126.94397,35.94884,"익산1","이곳은 익산의 어딘가이다.");
-        marker[1] = new Marker(126.97213,35.98111,"익산2","이곳은 익산의 어딘가이다.");
-        marker[2] = new Marker(126.91209,35.98219,"익산3","이곳은 익산의 어딘가이다.");
-        marker[3] = new Marker(126.89054,35.92987,"익산4","이곳은 익산의 어딘가이다.");
-        marker[4] = new Marker(126.89054,35.89987,"익산5","이곳은 익산의 어딘가이다.");
+        marker[0] = new Marker(126.94397,35.94884,"익산1","이곳은 익산의 어딘가이다.","전라북도 익산시 무슨동 무슨번지");
+        marker[0].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
+        marker[1] = new Marker(126.97213,35.98111,"익산2","이곳은 익산의 어딘가이다.","전라북도 익산시 무슨길 무슨번");
+        marker[1].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
+        marker[2] = new Marker(126.91209,35.98219,"익산3","이곳은 익산의 어딘가이다.","전라북도 익산시 어딘가");
+        marker[2].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
+        marker[3] = new Marker(126.89054,35.92987,"익산4","이곳은 익산의 어딘가이다.","전라북도 전주시 안가요");
+        marker[3].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
+        marker[4] = new Marker(126.89054,35.89987,"익산5","이곳은 익산의 어딘가이다.","전라북도 위에는 뭐가있나요");
+        marker[4].markerimage=((BitmapDrawable)getResources().getDrawable(R.drawable.shashashape)).getBitmap();
 
         ConstraintLayout Lay = (ConstraintLayout)findViewById(R.id.SpotOption);
         Lay.setVisibility(View.GONE);
@@ -142,17 +158,42 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
 
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT); //ACTION_PIC과 차이점?
+                    /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT); //ACTION_PIC과 차이점?
                     intent.setType("image/*"); //이미지만 보이게
                     //Intent 시작 - 갤러리앱을 열어서 원하는 이미지를 선택할 수 있다.
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);*/
+                    Intent intent1 = new Intent(MapActivity.this,GetInfActivity.class);
+                    startActivity(intent1);
+                ConstraintLayout lay=(ConstraintLayout)findViewById(R.id.SpotOption);
+                lay.setVisibility(View.GONE);
+                    //refreshPhoto();
 
          }
+        });
+        Button ButtonGoViewer = (Button)findViewById(R.id.Button_goto_Viewer);
+        ButtonGoViewer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Cur_Spot>=0 && marker[Cur_Spot].image_exists)
+                {
+                    //setContentView(R.layout.activity_view_photo);
+                    //ImageView viewer=(ImageView)findViewById(R.id.imageview_main);
+                  //  viewer.setImageBitmap(marker[Cur_Spot].photo);
+                   // TextView tb = (TextView)findViewById(R.id.textView_Viewer);
+                  //  tb.setText(marker[Cur_Spot].getMemo());
+                    Intent intent1 = new Intent(MapActivity.this, ViewPhotoActivity.class);
+                    startActivity(intent1);
+
+
+                }
+
+            }
         });
 
     }
     public final int Max_Spot=5;
-    Marker []marker;
+    public static Marker []marker;
     MarkerOptions[] markerOptions;
     public void onMapReady(final GoogleMap map) {
 
@@ -223,7 +264,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
     }
-    private static Bitmap createSquaredBitmap(Bitmap srcBmp) {
+    public static Bitmap createSquaredBitmap(Bitmap srcBmp) {
         int dim = Math.min(srcBmp.getWidth(), srcBmp.getHeight());
         Bitmap dstBmp = Bitmap.createBitmap(dim, dim, Bitmap.Config.ARGB_8888);
 
@@ -242,13 +283,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
-    private Bitmap rotate(Bitmap src, float degree) {
+    public static Bitmap rotate(Bitmap src, float degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
-    private int exifOrientationToDegrees(int exifOrientation) { if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) { return 180; } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) { return 270; } return 0; }
+    public static int exifOrientationToDegrees(int exifOrientation) { if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) { return 180; } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) { return 270; } return 0; }
 
     public void checkPermission() {
         boolean isGrant = false;
@@ -315,8 +356,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         if(Cur_Spot>-1)
         {
-            EditText et= findViewById(R.id.TextInit_Memo);
-            marker[Cur_Spot].setMemo(et.getText());
+            if(!(GetInfActivity.SavedMemo!=null && GetInfActivity.SavedMemo.compareTo("")!=0))
+            {EditText et= findViewById(R.id.TextInit_Memo);
+            marker[Cur_Spot].setMemo(et.getText());}
         }
 
         for(int i=0;i<Max_Spot;i++)
@@ -330,6 +372,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         lay.setVisibility(View.VISIBLE);
         EditText edittext = findViewById(R.id.TextInit_Memo);
         edittext.setText(marker[Cur_Spot].getMemo());
+        TextView tb= (TextView)findViewById(R.id.SpotAdresstext);
+        tb.setText(marker[Cur_Spot].Adress);
         refreshPhoto();
         return false;
     }

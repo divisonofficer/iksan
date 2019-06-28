@@ -1,8 +1,9 @@
 package com.sss.fills;
 
+import android.content.Context;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 public class ViewPhotoActivity extends AppCompatActivity {
@@ -20,7 +22,7 @@ public class ViewPhotoActivity extends AppCompatActivity {
     private TextView txtState;
 
     private int stateMediaPlayer;
-    private final int   STATE_NOTSTARTER = 0;
+    private final int STATE_NOTSTARTER = 0;
     private final int STATE_PLAYING = 1;
     private final int STATE_PAUSING = 2;
     private final int STATEMP_ERROR = 3;
@@ -28,23 +30,37 @@ public class ViewPhotoActivity extends AppCompatActivity {
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_photo);
 
-        photo = (ImageView) findViewById(R.id.imageView2);
-        /*try {
+        photo = (ImageView) findViewById(R.id.imageview_main);
+       /* try {
             Uri uri = Uri.parse("file:///" + Environment.getExternalStorageDirectory() + "/572/내그림/image_sample.jpg");
             photo.setImageURI(uri);
         }catch (Exception e){
             e.printStackTrace();
         }*/
+        photo.setImageBitmap(MapActivity.marker[MapActivity.Cur_Spot].photo);
+        TextView tb= (TextView)findViewById(R.id.textView_Viewer);
+        tb.setText(MapActivity.marker[MapActivity.Cur_Spot].Memo);
+        Button playbt= (Button)findViewById(R.id.playsound);
+     /*   playbt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context c = v.getContext();
+                MediaPlayer m = new MediaPlayer();
+                m.setDataSource(new FileDescriptor());
+                m.setDataSource(ViewPhotoActivity.this,.toURI());
+            }
+        });*/
 
-
-        btnPause=(Button) findViewById(R.id.play);
+        btnPause=(Button) findViewById(R.id.playsound);
 
         btnPause.setOnClickListener(buttonPlayPauseOnClickListener);
 
         initMediaPlayer();
+
     }
     private void initMediaPlayer() {
         String PATH_TO_FILE = Environment.getExternalStorageDirectory()
@@ -56,12 +72,12 @@ public class ViewPhotoActivity extends AppCompatActivity {
             mediaPlayer.prepare();
             Toast.makeText(this, PATH_TO_FILE, Toast.LENGTH_LONG).show();
             stateMediaPlayer = STATE_NOTSTARTER;
-          //  txtState.setText("- IDLE -");
+            //  txtState.setText("- IDLE -");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
             stateMediaPlayer = STATEMP_ERROR;
-          //  txtState.setText("- 에러!!! -");
+            //  txtState.setText("- 에러!!! -");
         } catch (IllegalStateException e) {
             e.printStackTrace();
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
@@ -71,7 +87,7 @@ public class ViewPhotoActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
             stateMediaPlayer = STATEMP_ERROR;
-           // txtState.setText("- 에러!!! -");
+            // txtState.setText("- 에러!!! -");
         }
     }
     Button.OnClickListener buttonPlayPauseOnClickListener = new Button.OnClickListener() {
@@ -81,19 +97,19 @@ public class ViewPhotoActivity extends AppCompatActivity {
                 case STATE_NOTSTARTER:
                     mediaPlayer.start();
                     btnPause.setText("Pause");
-                   // txtState.setText("- 실행 -");
+                    // txtState.setText("- 실행 -");
                     stateMediaPlayer = STATE_PLAYING;
                     break;
                 case STATE_PLAYING:
                     mediaPlayer.pause();
                     btnPause.setText("Play");
-                 //   txtState.setText("- 일시중지 -");
+                    //   txtState.setText("- 일시중지 -");
                     stateMediaPlayer = STATE_PAUSING;
                     break;
                 case STATE_PAUSING:
                     mediaPlayer.start();
                     btnPause.setText("Pause");
-                 //   txtState.setText("- 실행중 -");
+                    //   txtState.setText("- 실행중 -");
                     stateMediaPlayer = STATE_PLAYING;
                     break;
             }

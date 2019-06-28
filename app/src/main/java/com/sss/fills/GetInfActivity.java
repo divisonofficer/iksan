@@ -2,18 +2,16 @@ package com.sss.fills;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaPlayer;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
@@ -27,8 +25,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,12 +37,12 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static com.sss.fills.MapActivity.exifOrientationToDegrees;
 
 public class GetInfActivity extends AppCompatActivity {
     /*사진 활용*/
@@ -62,23 +58,49 @@ public class GetInfActivity extends AppCompatActivity {
     ImageButton mBtRecord = null;
     TextView tRecord=null;
     String mPath = null;
+    EditText textEdit;
+    public static String SavedMemo=null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SavedMemo="";
         setContentView(R.layout.activity_get_inf);
         /*메모*/
-        EditText editText = (EditText)this.findViewById(R.id.editText);
+        TextView tb;
+        tb=(TextView)findViewById(R.id.getinfTitle);
+        tb.setText(MapActivity.marker[MapActivity.Cur_Spot].getName());
+        tb=(TextView)findViewById(R.id.getinfAdress);
+        tb.setText(MapActivity.marker[MapActivity.Cur_Spot].Adress);
+        tb=(TextView)findViewById(R.id.getinfIndex);
+        tb.setText(MapActivity.marker[MapActivity.Cur_Spot].getIndex());
+        Button textbt= (Button)findViewById(R.id.texteditfinal);
+        final EditText editText = (EditText)this.findViewById(R.id.editTextGetInf);
+        textbt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String send=new String(editText.getText().toString());
+                MapActivity.marker[MapActivity.Cur_Spot].Memo=send;
+                SavedMemo=send;
+                Toast.makeText(getApplication(),send+MapActivity.marker[MapActivity.Cur_Spot].Memo,Toast.LENGTH_LONG).show();
+                Log.e("ferwef","메모적었다");
+            }
+        });
+
+
+
         editText.addTextChangedListener(new TextWatcher() {
             // 입력되는 텍스트에 변화가 있을 때
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                // Toast.makeText(MainActivity.this, "입력중", Toast.LENGTH_SHORT).show();
+            //    MapActivity.marker[MapActivity.Cur_Spot].setMemo(textEdit.getText());
             }
 
             // 입력이 끝났을 때
             @Override
             public void afterTextChanged(Editable editable) {
                 //Toast.makeText(MainActivity.this, "입력완료", Toast.LENGTH_SHORT).show();
+              //  MapActivity.marker[MapActivity.Cur_Spot].setMemo(editable);
             }
 
             // 입력하기 전에
@@ -106,6 +128,8 @@ public class GetInfActivity extends AppCompatActivity {
                     mRecorder.stop();
 
                     isRecording = false;
+                    MapActivity.marker[MapActivity.Cur_Spot].Sound=new File(mPath);
+
                    // mBtRecord.setText("Start Recording");
                 }
             }
@@ -167,6 +191,12 @@ public class GetInfActivity extends AppCompatActivity {
         });
 
     }
+    public void onBackPressed() {
+        //textEdit=(EditText)this.findViewById(R.id.editTextGetInf);
+        //MapActivity.marker[MapActivity.Cur_Spot].setMemo(textEdit.getText());
+        super.onBackPressed();
+    }
+
     void initAudioRecorder() {
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
@@ -175,6 +205,7 @@ public class GetInfActivity extends AppCompatActivity {
         mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PCMRECORDER/record.aac";
         Log.d(TAG, "file path is " + mPath);
         mRecorder.setOutputFile(mPath);
+
         try {
             mRecorder.prepare();
         } catch (Exception e) {
@@ -290,11 +321,41 @@ public class GetInfActivity extends AppCompatActivity {
      */
     private void setImage() {
         ImageView imageView = findViewById(R.id.imageView);
-        ImageUtils.resizeFile(tempFile, tempFile, 1280, isCamera);
+       // ImageUtils.resizeFile(tempFile, tempFile, 1280, isCamera);
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(tempFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
+        originalBm=MapActivity.rotate(originalBm,exifDegree);
+        int nh = (int) (originalBm.getHeight() * (1024.0 / originalBm.getWidth()));
+        Bitmap scaled = Bitmap.createScaledBitmap(originalBm, 1024, nh, true);
+        scaled=MapActivity.createSquaredBitmap(scaled);
+
         Log.d(TAG, "setImage : " + tempFile.getAbsolutePath());
-        imageView.setImageBitmap(originalBm);
+        imageView.setImageBitmap(scaled);
+        MapActivity.marker[MapActivity.Cur_Spot].photo=scaled;
+        MapActivity.marker[MapActivity.Cur_Spot].image_exists=true;
+
+        Paint paint= new Paint();
+        Bitmap sccaled=scaled.copy(scaled.getConfig(),true);
+        Canvas tempcanvas= new Canvas(sccaled);
+        Bitmap Nshape=MapActivity.marker[MapActivity.Cur_Spot].markerimage;
+        Nshape=Bitmap.createScaledBitmap(Nshape,scaled.getWidth()/2,scaled.getHeight()/2,true);
+        tempcanvas.drawBitmap(scaled,0,0,paint);
+        PorterDuff.Mode mode= PorterDuff.Mode.XOR;
+        paint.setXfermode(new PorterDuffXfermode(mode));
+        tempcanvas.drawBitmap(Nshape,0,0,paint);
+        Bitmap sscaled = Bitmap.createScaledBitmap(sccaled, 128, 128, true);
+        MapActivity.marker[MapActivity.Cur_Spot].markerimage=sscaled;
+
+
 
         /**
          *  tempFile 사용 후 null 처리를 해줘야 합니다.
