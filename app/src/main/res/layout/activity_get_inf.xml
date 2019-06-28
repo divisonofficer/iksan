@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_plus" />
+            app:srcCompat="@drawable/ic_plus1" />
 
         <ImageView
             android:id="@+id/imageView"

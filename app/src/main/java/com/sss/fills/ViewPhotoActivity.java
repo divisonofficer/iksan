@@ -20,7 +20,7 @@ public class ViewPhotoActivity extends AppCompatActivity {
     private TextView txtState;
 
     private int stateMediaPlayer;
-    private final int STATE_NOTSTARTER = 0;
+    private final int   STATE_NOTSTARTER = 0;
     private final int STATE_PLAYING = 1;
     private final int STATE_PAUSING = 2;
     private final int STATEMP_ERROR = 3;
@@ -32,12 +32,12 @@ public class ViewPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_photo);
 
         photo = (ImageView) findViewById(R.id.imageView2);
-        try {
+        /*try {
             Uri uri = Uri.parse("file:///" + Environment.getExternalStorageDirectory() + "/572/내그림/image_sample.jpg");
             photo.setImageURI(uri);
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
 
 
         btnPause=(Button) findViewById(R.id.play);

@@ -5,6 +5,6 @@
     <item android:state_selected="true" android:drawable="@drawable/ic_heritage"/>
 
     <!-- selector가 눌리지 않았을때 @drawable/button01_normal 를 보여준다.-->
-    <item android:state_selected="false" android:drawable="@drawable/ic_gunsan"/>
+    <item android:state_selected="false" android:drawable="@drawable/ic_aaa"/>
 
 </selector>
